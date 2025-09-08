@@ -1,0 +1,13 @@
+{% if page_obj.has_other_pages %}
+<div class="mt-8 flex justify-center">
+  <nav class="inline-flex rounded-lg shadow">
+    {% if page_obj.has_previous %}
+      <a href="?{% if request.GET.q %}q={{request.GET.q}}&{% endif %}{% if request.GET.category %}category={{request.GET.category}}&{% endif %}page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-white border border-slate-200 rounded-l-lg">Prev</a>
+    {% endif %}
+    <span class="px-4 py-2 bg-indigo-600 text-white border border-indigo-600">{{ page_obj.number }}</span>
+    {% if page_obj.has_next %}
+      <a href="?{% if request.GET.q %}q={{request.GET.q}}&{% endif %}{% if request.GET.category %}category={{request.GET.category}}&{% endif %}page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-white border border-slate-200 rounded-r-lg">Next</a>
+    {% endif %}
+  </nav>
+</div>
+{% endif %}

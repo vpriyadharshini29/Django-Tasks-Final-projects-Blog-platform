@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Blogs · Blogify{% endblock %}
+{% block content %}
+
+<!-- Search + Categories -->
+<div class="grid md:grid-cols-3 gap-6 items-start">
+  <div class="md:col-span-2">
+    <form method="get" class="mb-6">
+      <div class="flex gap-3">
+        {{ form.q }}
+        <button class="px-4 py-2 rounded-lg bg-indigo-600 text-white">Search</button>
+      </div>
+    </form>
+
+    {% for post in posts %}
+      <article class="bg-white rounded-2xl shadow p-5 mb-5 hover:shadow-lg transition">
+        <div class="flex items-start gap-4">
+          {% if post.image %}
+            <img src="{{ post.image.url }}" class="w-32 h-24 object-cover rounded-lg border" alt="{{ post.title }}" />
+          {% else %}
+            <div class="w-32 h-24 rounded-lg bg-slate-200 grid place-items-center text-slate-500">No Image</div>
+          {% endif %}
+          <div class="flex-1">
+            <h2 class="text-xl font-semibold">
+              <a class="text-indigo-700 hover:underline" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            </h2>
+            <p class="text-sm text-slate-500">By {{ post.author }} • {{ post.created_at|date:"M d, Y" }}</p>
+            <p class="mt-2 line-clamp-2">{{ post.content|striptags|truncatewords:28 }}</p>
+            <div class="mt-2 flex flex-wrap gap-2">
+              {% for c in post.categories.all %}
+                <a href="?category={{ c.slug }}" class="px-2 py-0.5 text-xs bg-slate-100 rounded">{{ c.name }}</a>
+              {% endfor %}
+              {% for t in post.tags.all %}
+                <span class="px-2 py-0.5 text-xs bg-indigo-50 rounded">#{{ t.name }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <p class="text-slate-500">No posts found.</p>
+    {% endfor %}
+
+    {% include "pagination.html" with page_obj=page_obj %}
+  </div>
+
+  <aside class="space-y-6">
+    <div class="bg-white rounded-2xl shadow p-5">
+      <h3 class="font-semibold mb-3">Categories</h3>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="px-3 py-1 rounded-full border {% if not active_category %}bg-indigo-600 text-white border-indigo-600{% endif %}">All</a>
+        {% for c in categories %}
+          <a href="?category={{ c.slug }}" class="px-3 py-1 rounded-full border {% if active_category == c.slug %}bg-indigo-600 text-white border-indigo-600{% endif %}">
+            {{ c.name }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow p-5">
+      <h3 class="font-semibold mb-3">Subscribe</h3>
+      <form method="post" action="{% url 'subscribe' %}" class="flex gap-2">
+        {% csrf_token %}
+        {{ subscribe_form.email }}
+        <button class="px-3 py-2 rounded-lg bg-emerald-600 text-white">Subscribe</button>
+      </form>
+      <p class="text-xs text-slate-500 mt-2">Get an email whenever a new blog is posted.</p>
+    </div>
+  </aside>
+</div>
+{% endblock %}

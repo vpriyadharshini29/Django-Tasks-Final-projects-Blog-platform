@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Delete Comment{% endblock %}
+{% block content %}
+<div class="bg-white rounded-2xl shadow p-6 max-w-xl">
+  <h2 class="text-xl font-semibold mb-3">Delete this comment?</h2>
+  <form method="post">
+    {% csrf_token %}
+    <button class="px-4 py-2 bg-rose-600 text-white rounded-lg">Delete</button>
+    <a href="{{ object.post.get_absolute_url }}" class="ml-3 px-4 py-2 bg-slate-200 rounded-lg">Cancel</a>
+  </form>
+</div>
+{% endblock %}

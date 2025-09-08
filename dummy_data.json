@@ -1,0 +1,6 @@
+[
+  { "model": "posts.category", "pk": 1, "fields": {"name": "Django", "slug": "django"} },
+  { "model": "posts.category", "pk": 2, "fields": {"name": "Python", "slug": "python"} },
+  { "model": "posts.tag", "pk": 1, "fields": {"name": "web", "slug": "web"} },
+  { "model": "posts.tag", "pk": 2, "fields": {"name": "tips", "slug": "tips"} }
+]

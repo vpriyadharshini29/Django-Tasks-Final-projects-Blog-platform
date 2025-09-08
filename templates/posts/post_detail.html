@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} · Blogify{% endblock %}
+{% block content %}
+<article class="bg-white rounded-2xl shadow p-6">
+  <h1 class="text-3xl font-extrabold mb-2">{{ post.title }}</h1>
+  <p class="text-sm text-slate-500 mb-4">By {{ post.author }} • {{ post.created_at|date:"M d, Y" }}</p>
+
+  {% if post.image %}
+    <img src="{{ post.image.url }}" class="w-full max-h-[420px] object-cover rounded-xl mb-6" alt="{{ post.title }}" />
+  {% endif %}
+
+  <div class="prose max-w-none">{{ post.content|linebreaks }}</div>
+
+  <div class="mt-6 flex flex-wrap gap-2">
+    {% for c in post.categories.all %}
+      <a href="/?category={{ c.slug }}" class="px-2 py-1 rounded bg-slate-100">{{ c.name }}</a>
+    {% endfor %}
+    {% for t in post.tags.all %}
+      <span class="px-2 py-1 rounded bg-indigo-50">#{{ t.name }}</span>
+    {% endfor %}
+  </div>
+
+  {% if user == post.author %}
+    <div class="mt-6 flex gap-3">
+      <a href="{% url 'post_edit' slug=post.slug %}" class="px-4 py-2 rounded-lg bg-indigo-600 text-white">Edit</a>
+      <a href="{% url 'post_delete' slug=post.slug %}" class="px-4 py-2 rounded-lg bg-rose-600 text-white">Delete</a>
+    </div>
+  {% endif %}
+</article>
+
+<section class="mt-8">
+  <h3 class="font-semibold mb-3">Comments ({{ post.comments.count }})</h3>
+  <div class="space-y-4">
+    {% for c in post.comments.all %}
+      <div class="bg-white rounded-xl p-4 shadow flex justify-between">
+        <div>
+          <p class="text-sm text-slate-500 mb-1">{{ c.user }} • {{ c.created_at|date:"M d, Y H:i" }}</p>
+          <p>{{ c.text|linebreaks }}</p>
+        </div>
+        {% if user == c.user %}
+        <div class="text-sm flex gap-2">
+          <a class="text-indigo-600" href="{% url 'comment_edit' pk=c.pk %}">Edit</a>
+          <a class="text-rose-600" href="{% url 'comment_delete' pk=c.pk %}">Delete</a>
+        </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="text-slate-500">Be the first to comment.</p>
+    {% endfor %}
+  </div>
+
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'comment_add' slug=post.slug %}" class="mt-6 bg-white rounded-xl p-4 shadow">
+      {% csrf_token %}
+      {{ comment_form.as_p }}
+      <button class="px-4 py-2 rounded-lg bg-indigo-600 text-white">Add Comment</button>
+    </form>
+  {% else %}
+    <p class="mt-4 text-slate-600">Please <a href="{% url 'login' %}" class="text-indigo-600 underline">log in</a> to comment.</p>
+  {% endif %}
+</section>
+{% endblock %}

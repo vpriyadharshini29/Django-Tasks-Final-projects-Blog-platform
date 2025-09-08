@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Edit Comment{% endblock %}
+{% block content %}
+<div class="bg-white rounded-2xl shadow p-6 max-w-xl">
+  <h2 class="text-xl font-semibold mb-3">Edit Comment</h2>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg">Save</button>
+  </form>
+</div>
+{% endblock %}
